@@ -1508,10 +1508,12 @@ final class StatusBarItemControllerPresentationTests: BaseTestCase {
 
         let button = try XCTUnwrap(controller.statusItem.button)
         // The stacked layout is drawn by a SwiftUI hosting view, so the
-        // button's own image/title are left empty and the item is sized from
-        // the hosting view's intrinsic width.
+        // button's own title is empty and its image is an empty (zero-size)
+        // placeholder that keeps the button in its normal drawing mode (so the
+        // item dims with the menu bar); the item is sized from the hosting
+        // view's intrinsic width.
         XCTAssertEqual(button.attributedTitle.string, "")
-        XCTAssertNil(button.image)
+        XCTAssertEqual(button.image?.size, NSSize.zero)
 
         let hostingView = try XCTUnwrap(controller.stackedHostingView)
         XCTAssertFalse(hostingView.rootView.title.isEmpty)

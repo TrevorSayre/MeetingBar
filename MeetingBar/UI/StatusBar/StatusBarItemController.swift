@@ -289,8 +289,13 @@ final class StatusBarItemController {
             stackedHostingView = hostingView
         }
 
-        button.image = nil
-        button.imagePosition = .noImage
+        // Keep an empty (zero-size) image rather than clearing it to nil. A
+        // status button that hosts a custom subview but has a nil image does
+        // not pick up the menu bar's inactive-display dimming, so its content
+        // stays bright on secondary monitors; an empty image keeps the button
+        // in its normal image-drawing mode (matching how SpotMenu configures
+        // its hosting-view status item) so the whole item dims like native ones.
+        button.image = NSImage()
         button.toolTip = presentation.tooltip
 
         hostingView.layoutSubtreeIfNeeded()

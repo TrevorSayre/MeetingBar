@@ -23,7 +23,7 @@ struct StatusBarStackedTitleView: View {
     let style: StatusBarTitleStyle
 
     var body: some View {
-        HStack(spacing: 4) {
+        let content = HStack(spacing: 4) {
             if let icon {
                 iconImage(icon)
                     .frame(width: 16, height: 16)
@@ -36,11 +36,22 @@ struct StatusBarStackedTitleView: View {
                 Text(time)
                     .font(.system(size: 9, weight: .medium))
             }
-            .foregroundStyle(style == .inactive ? Color.secondary : Color.primary)
             .lineLimit(1)
             .truncationMode(.tail)
         }
         .fixedSize()
+
+        // Apply the inactive dimming to the whole stack so a template icon dims
+        // alongside the text. For normal/underlined events the color is left
+        // unset so the text and template icon inherit the menu bar's vibrant
+        // label color, which dims on inactive displays and blends like native
+        // menu bar items; forcing Color.primary here renders fully opaque and
+        // stands out against neighbors.
+        if style == .inactive {
+            content.foregroundStyle(.secondary)
+        } else {
+            content
+        }
     }
 
     private func iconImage(_ icon: NSImage) -> some View {
